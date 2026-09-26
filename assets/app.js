@@ -3,7 +3,17 @@ const dots = [...document.querySelectorAll('.dot')];
 let currentPage = 0;
 let updateTimer;
 
+function setCurrentPage(index) {
+  currentPage = index;
+  dots.forEach((dot, dotIndex) => {
+    dot.classList.toggle('active', dotIndex === currentPage);
+    if (dotIndex === currentPage) dot.setAttribute('aria-current', 'page');
+    else dot.removeAttribute('aria-current');
+  });
+}
+
 function showPage(index, smooth = true) {
+  setCurrentPage(index);
   pages.scrollTo({
     left: index * pages.clientWidth,
     behavior: smooth ? 'smooth' : 'auto'
@@ -13,13 +23,7 @@ function showPage(index, smooth = true) {
 function updatePagination() {
   const nextPage = Math.round(pages.scrollLeft / pages.clientWidth);
   if (nextPage === currentPage) return;
-
-  currentPage = nextPage;
-  dots.forEach((dot, index) => {
-    dot.classList.toggle('active', index === currentPage);
-    if (index === currentPage) dot.setAttribute('aria-current', 'page');
-    else dot.removeAttribute('aria-current');
-  });
+  setCurrentPage(nextPage);
 }
 
 pages.addEventListener('scroll', () => {
